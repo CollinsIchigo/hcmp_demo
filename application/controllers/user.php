@@ -64,17 +64,21 @@ class User extends MY_Controller {
 			$user_indicator = $access_level['user_indicator'];
             
             if ($user_indicator  == 'district') :
-             //get county name
+             //get subcounty name
             $district_name = districts::get_district_name_($district_id);
-            $banner_name = $district_name['district']." Sub-county";
-            elseif ($user_indicator  == 'county') :            
+			$county_name = Counties::get_county_name($county_id);
+            $banner_name = $county_name['county']." County".", ".$district_name['district']." Sub-county ";
+            elseif ($user_indicator  == 'county') : 
+				           
             //get county name
             $county_name = Counties::get_county_name($county_id);
             $banner_name = $county_name['county']." County";
             elseif ($user_indicator  == 'facility' || $user_indicator == 'facility_admin') :
-             //get county name
+             //get facility name
             $facility_name = Facilities::get_facility_name2($facility_id);
-            $banner_name = $facility_name['facility_name'];
+			$district_name = districts::get_district_name_($district_id);
+			$county_name = Counties::get_county_name($county_id);
+            $banner_name = $county_name['county']." County, ".$district_name['district']." Sub-county, ".$facility_name['facility_name'];
             endif;
    
 			$session_data = array('county_id' => $county_id,'partner_id' => $partner_id, 'phone_no' => $phone,
@@ -154,7 +158,7 @@ class User extends MY_Controller {
 
 		//check if user exists and is activated
 
-		$myresult = Users::check_user_exist($email);
+		 $myresult = Users::check_user_exist($email);
 
 		//get user details
 		if (count($myresult) > 0) {
@@ -169,7 +173,7 @@ class User extends MY_Controller {
 			//check if user requested for a password recovery in last 3 days.
 
 			$check_code_request = Log_monitor::check_code_request($user_id);
-
+			
 			if (count($check_code_request) > 0) {
 				$data['user_email'] = $email_address;
 				$data['popup'] = "request_valid";
@@ -503,6 +507,12 @@ class User extends MY_Controller {
 		$user_type = $_POST['user_type'];
 		$full_name= $fname .''.$lname; 
 		$county=$_POST['county_id'];
+		//reports
+		$stocks=$_POST['stocks'];
+		$stocking_levels=$_POST['stocking_levels'];
+		$consumption=$_POST['consumption'];
+		$potential_exp=$_POST['potential_exp'];
+		$expiries=$_POST['expiries'];
 		
 		switch ($identifier):
 			case 'moh':
@@ -674,6 +684,7 @@ class User extends MY_Controller {
 				$this -> hcmp_functions -> send_email($email_address, $message, $subject, $attach_file = NULL, $bcc_email = NULL, $cc_email = NULL);
 
 				//exit;
+		//save report access
 
 		//save user
 				$savethis =  new Users();
@@ -752,14 +763,7 @@ endif;
 		
 		
 		//update user
-		 $q="UPDATE `user` SET fname ='$fname' ,lname ='$lname',email ='$email_edit',usertype_id =$user_type_edit_district,telephone ='$telephone_edit',
-									district ='$district_name_edit',facility ='$facility_id_edit',status ='$status',county_id ='$county',
-									email_recieve ='$email_recieve_edit',
-									sms_recieve ='$sms_recieve_edit'
-                                  	WHERE `id`= '$user_id'";
-echo json_encode($q);
-                                  	exit;
-		
+				
 			$update_user = Doctrine_Manager::getInstance()->getCurrentConnection();
 			$update_user->execute("UPDATE `user` SET fname ='$fname' ,lname ='$lname',email ='$email_edit',usertype_id =$user_type_edit_district,telephone ='$telephone_edit',
 									district ='$district_name_edit',facility ='$facility_id_edit',status ='$status',county_id ='$county',
@@ -902,4 +906,10 @@ echo json_encode($q);
 			
 		}
 
+		public function tester(){
+			$this->load->model('users');
+			$last_inserted = $this ->users->set_report_access();
+			echo "<pre>This";print_r($last_inserted);echo "</pre>";exit;
+			//$this->Users::set_report_access();
+		}
 }

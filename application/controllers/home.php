@@ -1,6 +1,6 @@
 <?php
 /*
- * @author Kariuki & Mureithi
+ * @author Kariuki & Mureithi & Collins
  */
 if (!defined('BASEPATH'))
 	exit('No direct script access allowed');
@@ -153,8 +153,8 @@ class Home extends MY_Controller
 	'potential_expiries'=>$potential_expiries,
 	'actual_expiries'=>$actual_expiries,
 	'facility_donations'=>$facility_donations,
-	'facility_donations_pending'=>$facility_donations_pending,
-	'stocks_from_v1'=>$stocks_from_v1
+	'facility_donations_pending'=>$facility_donations_pending
+	//,'stocks_from_v1'=>$stocks_from_v1
 	);	
     }
 	

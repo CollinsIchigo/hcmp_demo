@@ -65,9 +65,9 @@ public function send_order_approval_sms($facility_code,$status){
        $message=($status==1)?$facility_name." order has been rejected. HCMP":
        $facility_name." order has been approved. HCMP";
  
-       $data=Users::getUsers($facility_code)->toArray();
-	   $phone=$this->get_facility_phone_numbers($facility_code);
-	   $phone .=$this->get_ddp_phone_numbers($data[0]['district']);
+       $data = Users::getUsers($facility_code)->toArray();
+	   $phone = $this->get_facility_phone_numbers($facility_code);
+	   $phone .= $this->get_ddp_phone_numbers($data[0]['district']);
 
 	   $this->send_sms(substr($phone,0,-1),$message);
 
@@ -155,13 +155,12 @@ public function send_stock_decommission_email($message,$subject,$attach_file){
 	}
 public function send_order_submission_email($message,$subject,$attach_file){
 
-	   $facility_code=$this -> session -> userdata('facility_id');
-	   $data=Users::getUsers($facility_code)->toArray();
+	   $facility_code = $this -> session -> userdata('facility_id');
+	   $data = Users::getUsers($facility_code)->toArray();
 	   $email_address=$this->get_facility_email($facility_code);
 	    
 	   $email_address .=$this->get_ddp_email($data[0]['district']);	   
-	   $cc_email=($this->test_mode)?'kelvinmwas@gmail.com,collinsojenge@gmail.com,': 
-	   $this->get_county_email($data[0]['district']) ;
+	   $cc_email=($this->test_mode)?'kelvinmwas@gmail.com,collinsojenge@gmail.com,': $this->get_county_email($data[0]['district']) ;
 	   
 	  return $this->send_email(substr($email_address,0,-1),$message, $subject,$attach_file,null,substr( $cc_email,0,-1));
 	

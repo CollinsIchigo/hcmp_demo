@@ -80,9 +80,35 @@ class Users extends Doctrine_Record {
 	{
 		$query = Doctrine_Query::create() -> select("DISTINCT usertype_id, telephone,district, facility") -> from("users")->where("status='1' and  facility='$facility_code'");
 		$info = $query -> execute();
-		
 		return $info;
 	}
+	public static function get_scp_details($district){
+		$query = Doctrine_Manager::getInstance() -> getCurrentConnection() -> 
+		fetchAll("SELECT 
+				    fname, lname, telephone
+				FROM
+				    user
+				WHERE
+				    district = $district 
+				    AND usertype_id = '3'
+				    AND telephone <>0");
+		
+		return $query;
+	}
+	public static function get_county_pharm_details($county_id){
+		$query = Doctrine_Manager::getInstance() -> getCurrentConnection() -> 
+		fetchAll("SELECT 
+					    fname, lname, telephone
+					FROM
+					    user
+					WHERE
+					    county_id = $county_id 
+					    AND usertype_id = '10'
+					    AND telephone <>0");
+		
+		return $query;
+	}
+
 	public static function get_user_emails($facility_code) 
 	{
 		$query = Doctrine_Query::create() -> select("*") -> from("users")->where("status='1' and  facility='$facility_code' AND email_recieve = 1");
@@ -92,7 +118,7 @@ class Users extends Doctrine_Record {
 	}
 
 	public static function check_user_exist($email) {
-		$query = Doctrine_Query::create() -> select("*") -> from("Users") -> where("email='$email' AND status IN(1,2)");
+		$query = Doctrine_Query::create() -> select("*") -> from("Users") -> where("email='$email' AND status IN(1,2)") ;
 		$result = $query -> execute(array(), Doctrine::HYDRATE_ARRAY);
 		return $result;
 	}
@@ -232,8 +258,13 @@ FROM
 	//////get the dpp details 
 public static function get_dpp_details($distirct){
 	$query = Doctrine_Query::create() -> select("*") -> from("users")->where("district=$distirct and usertype_id='3' ");
-		$level = $query -> execute();
-		return $level;
+	$level = $query -> execute();
+	return $level;
+}
+public static function get_cp_details($county_id){
+	$query = Doctrine_Query::create() -> select("*") -> from("users")->where("county_id=$county_id and usertype_id='10' ");
+	$level = $query -> execute();
+	return $level;
 }
 public static function get_dpp_emails($distirct){
 	$query = Doctrine_Query::create() -> select("*") -> from("users")->where("district = $distirct and usertype_id='3' and email_recieve = 1");
@@ -435,4 +466,12 @@ public static function get_county_details($county_id){
 		echo $update;
 	}
 	
+	public static function set_report_access(){
+		$query = Doctrine_Manager::getInstance() -> getCurrentConnection() -> fetchAll("
+			SELECT MAX(id) FROM user
+			");
+
+		return $query;
+	}
+
 	}

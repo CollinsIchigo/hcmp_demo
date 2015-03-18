@@ -20,29 +20,6 @@
 	</div>
 	
 	<div class="col-md-2">
-			<div class="panel panel-default">
-							<div class="panel-body" id="active">
-								<div class="stat_item color_d">
-									<span class="glyphicon glyphicon-user"></span>
-									<span><?php echo($x[1]);?>
-										Active</span>
-								</div>
-							</div>
-						</div>	
-	</div>
-	
-	<div class="col-md-2">
-					<div class="panel panel-default">
-							<div class="panel-body" id="inactive">
-								<div class="stat_item color_g">
-									<span class="glyphicon glyphicon-user"></span>
-									<span><?php echo($x[0]); ?>
-										Inactive</span>
-								</div>
-							</div>
-						</div>
-	</div>
-	<div class="col-md-2">
 					
 	</div>
 	<div class="col-md-2">
@@ -58,19 +35,18 @@
 		<div class="container-fluid">
 			
 			<div class="row">
-
-				<div class="col-md-1" style="padding-left: 0;">
+				<div class="col-md-1" style="padding-left: 0; float:right; right:0;clear:both;  margin-bottom:5px;">
 					<button class="btn btn-primary add" data-toggle="modal" data-target="#addModal" id="add_new">
 						<span class="glyphicon glyphicon-plus"></span>Add User
 					</button>
-				</div>
-				<div class="col-md-11 dt" style="border: 1px solid #ddd;padding-top: 1%; " id="test">
+				</div> 
+
+				<div class="col-md-13 dt" style="border: 1px solid #ddd;padding-top: 1%; " id="test">
 
 					<table  class="table table-hover table-bordered table-update" id="datatable"  >
 						<thead style="background-color: white">
 							<tr style="font-size: 15px;">
-								<th>First name</th>
-								<th>Last name</th>
+								<th>Names</th>
 								<th>Email </th>
 								<th>Phone No</th>
 								<th>County</th>
@@ -79,7 +55,7 @@
 								<th>User Type</th>
 								<th>Recieve Email</th>
 								<th>Recieve Text Msg</th>
-								<th>Status</th>
+								<th>Status (Active or Inactive)</th>
 								<th>Action</th>
 
 							</tr>
@@ -89,10 +65,11 @@
 
 							<?php
 							foreach ($listing as $list ) {
+								$fname = ucfirst($list['fname']);
+								$lname = ucfirst($list['lname']);
 							?>
 							<tr class="edit_tr" style="font-size: 14px;">
-								<td class="fname" ><?php echo $list['fname']; ?></td>
-								<td class="lname"><?php echo $list['lname']; ?>	</td>
+								<td class="fname" ><?php echo $fname." ".$lname; ?></td>
 								<td class="email" data-attr="<?php echo $list['user_id']; ?>"><?php echo $list['email'];?></td>
 								<td class="phone"><?php echo $list['telephone']; ?></td>
 								<td class="county" data-attr="<?php echo $list['county_id']; ?>"><?php echo $list['county']; ?></td>
@@ -124,18 +101,13 @@
 								endif;
 								 ?>
 
-								<td >
-								<?php
-									if ($list['status']==1) {
-								?>
-								<div class="status_item color_d" data-attr="true" >
-									<span style="font-size: 12px ;padding:4px">Active</span>
-								</div>
+								<td style="width:20px;" >
+								<?php if ($list['status']==1) {?>
+								<input type="checkbox" name="status-checkbox" id="status_switch_change" data-attr="<?php echo $list['user_id']; ?>" class="small-status-switch" checked = "checked" style="border-radius:0px!important;">
 								<?php }else{ ?>
-
-								<div class=" status_item color_g" data-attr="false" >
-									<span style="font-size: 12px;padding:4px">Deactivated</span>
-								</div> <?php } ?> </td>
+								<input type="checkbox" name="status-checkbox" id="status_switch_change" data-attr="<?php echo $list['user_id']; ?>" class="small-status-switch" style="border-radius:0px!important;">
+								<?php } ?> 
+								</td>
 								<td>
 								<button class="btn btn-primary btn-xs edit " data-toggle="modal" data-target="#editModal" id="<?php echo $list['user_id']; ?>" data-target="#">
 									<span class="glyphicon glyphicon-edit"></span>Edit
@@ -295,6 +267,39 @@
 									</div>
 								</div>
 								
+							<fieldset>
+									<legend style="font-size:1.5em">
+										Report Access
+									</legend>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+											<table class="table table-bordered" style="font-size:1em;">
+												<tbody>
+												<tr>
+													<td><label for="all">All Reports</label></td>
+													<td><input type="checkbox" value= "1" name="all_reports" class="all_reports" id="all_reports"></td>
+												</tr>
+													<tr>
+														<td><label for="stocks">Stocks</label></td>
+														<td><input type="checkbox" name="stocks" class="stocks" id="stocks"></td>
+														<td><label for="stocks">Stocking Levels</label></td>
+														<td><input type="checkbox" name="stocking_levels" class="stocking_levels" id="stocking_levels"></td>
+														<td><label for="stocks">Consumption</label></td>
+														<td><input type="checkbox" name="consumption" class="consumption" id="consumption"></td>
+														<td><label for="stocks">Potential Expiries</label></td>
+														<td><input type="checkbox" name="potential_exp" class="potential_exp" id="potential_exp"></td>
+														<td><label for="stocks">Expiries</label></td>
+														<td><input type="checkbox" name="expiries" class="expiries" id="expiries"></td>
+													</tr>
+													<tr>
+													</tr>
+												</tbody>
+											</table>
+											</div>
+										</div>
+									</div>
+							</fieldset>
 
 								<div class="row" style="margin:auto" id="processing">
 									<div class=" col-md-12">
